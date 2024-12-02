@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress Bar</title>
+  <style>
+    /* Center the page content */
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+
+    /* Progress bar container */
+    #progress-bar {
+      width: 80%;
+      max-width: 800px;
+      height: 50px;
+      background-color: #e0e0e0;
+      border-radius: 25px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Progress fill */
+    #progress-fill {
+      height: 100%;
+      width: 22%; /* Initial width of 22% */
+      background-color: rgb(255, 0, 0); /* Initial color */
+      border-radius: 25px 0 0 25px; /* Rounded corners */
+      transition: width 0.3s, background-color 0.3s; /* Smooth transition */
+    }
+
+    /* Text below the progress bar */
+    .bar-text {
+      width: 80%;
+      max-width: 800px;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    /* Align left and right text */
+    .left-text {
+      text-align: left;
+    }
+
+    .right-text {
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Progress bar container -->
+  <div id="progress-bar">
+    <div id="progress-fill"></div>
+  </div>
+
+  <!-- Text below the progress bar -->
+  <div class="bar-text">
+    <span class="left-text">Life of Ahasun Roman</span>
+    <span class="right-text" id="percentage">22%</span>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const progressFill = document.getElementById('progress-fill');
+      const percentageSpan = document.getElementById('percentage');
+
+      // Initial percentage
+      let percentage = 22;
+
+      // Function to calculate the color based on percentage
+      function getColor(percentage) {
+        const red = Math.min(255, Math.floor(percentage * 2.55));
+        const green = Math.min(255, Math.floor(255 - percentage * 2.55));
+        return `rgb(${red}, ${green}, 0)`;
+      }
+
+      // Update percentage and color every 9 months (25920000000 milliseconds)
+      function updateProgress() {
+        percentage += 1; // Increase by 1%
+        if (percentage > 100) percentage = 100; // Cap the percentage at 100%
+
+        // Update the width and color of the progress bar fill
+        progressFill.style.width = percentage + '%';
+        progressFill.style.backgroundColor = getColor(percentage);
+        percentageSpan.textContent = percentage + '%';
+      }
+
+      // Interval for updating the progress (9 months)
+      const nineMonthsInMilliseconds = 9 * 30 * 24 * 60 * 60 * 1000; // Approximate 9 months in milliseconds
+
+      // Update progress immediately and then every 9 months
+      updateProgress();
+      setInterval(updateProgress, nineMonthsInMilliseconds);
+    });
+  </script>
+
+</body>
+</html>
+
