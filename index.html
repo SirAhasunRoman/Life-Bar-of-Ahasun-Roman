@@ -1,111 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Progress Bar</title>
-  <style>
-    /* Center the page content */
-    body {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>এহসান বিচিত্রা</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            position: relative;
+        }
 
-    /* Progress bar container */
-    #progress-bar {
-      width: 80%;
-      max-width: 800px;
-      height: 50px;
-      background-color: #e0e0e0;
-      border-radius: 25px;
-      overflow: hidden;
-      position: relative;
-    }
+        h1 {
+            position: absolute;
+            top: 1in;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
 
-    /* Progress fill */
-    #progress-fill {
-      height: 100%;
-      width: 22%; /* Initial width of 22% */
-      background-color: rgb(255, 0, 0); /* Initial color */
-      border-radius: 25px 0 0 25px; /* Rounded corners */
-      transition: width 0.3s, background-color 0.3s; /* Smooth transition */
-    }
+        h1.red-text {
+            color: red;
+        }
 
-    /* Text below the progress bar */
-    .bar-text {
-      width: 80%;
-      max-width: 800px;
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
-      font-size: 24px;
-      font-weight: bold;
-    }
+        .progress-container {
+            width: 80%;
+            margin: 20px 0;
+            background-color: #fff;
+            border: 3px solid #006a4e; /* Bangladesh flag green color for border */
+            border-radius: 5px;
+            position: relative;
+        }
 
-    /* Align left and right text */
-    .left-text {
-      text-align: left;
-    }
+        .progress-bar {
+            width: 0%;
+            height: 30px;
+            background-color: green;
+            border-radius: 5px;
+            transition: width 0.5s, background-color 0.5s;
+        }
 
-    .right-text {
-      text-align: right;
-    }
-  </style>
+        .progress-label {
+            position: absolute;
+            top: 100%; /* Position the label below the bar */
+            width: 100%;
+            text-align: center;
+            margin-top: 5px;
+            font-size: 18px;
+        }
+
+        .progress-label span {
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+    </style>
 </head>
 <body>
+    <h1 id="header">এহসান রোমানের জীবন</h1>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar1"></div>
+        <div class="progress-label">সময়: <span id="progressText1">0%</span></div>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar2"></div>
+        <div class="progress-label">অভিজ্ঞতা: <span id="progressText2">0%</span></div>
+    </div>
+    <script>
+        function calculateAge(startDate) {
+            const now = new Date();
+            const diff = now - startDate; // Difference in milliseconds
+            const ageInSeconds = diff / 1000; // Convert to seconds
+            const ageInYears = ageInSeconds / (365.25 * 24 * 60 * 60); // Convert to years
+            return ageInYears;
+        }
 
-  <!-- Progress bar container -->
-  <div id="progress-bar">
-    <div id="progress-fill"></div>
-  </div>
+        function updateProgressBar(barId, textId, percentage) {
+            if (percentage > 100) percentage = 100; // Ensure it doesn't exceed 100%
 
-  <!-- Text below the progress bar -->
-  <div class="bar-text">
-    <span class="left-text">Life of Ahasun Roman</span>
-    <span class="right-text" id="percentage">22%</span>
-  </div>
+            const progressBar = document.getElementById(barId);
+            const progressText = document.getElementById(textId);
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const progressFill = document.getElementById('progress-fill');
-      const percentageSpan = document.getElementById('percentage');
+            progressBar.style.width = percentage + "%";
+            progressText.textContent = Math.floor(percentage) + "%"; // Show integer value
 
-      // Initial percentage
-      let percentage = 22;
+            // Calculate color from green to red
+            const red = Math.floor((percentage / 100) * 255);
+            const green = Math.floor(255 - (percentage / 100) * 255);
+            progressBar.style.backgroundColor = `rgb(${red}, ${green}, 0)`;
 
-      // Function to calculate the color based on percentage
-      function getColor(percentage) {
-        const red = Math.min(255, Math.floor(percentage * 2.55));
-        const green = Math.min(255, Math.floor(255 - percentage * 2.55));
-        return `rgb(${red}, ${green}, 0)`;
-      }
+            // Add hover/click to show decimal value
+            let hoverTimeout;
+            progressText.addEventListener("mouseenter", () => {
+                clearTimeout(hoverTimeout); // Clear any existing timeout
+                progressText.textContent = percentage.toFixed(3) + "%";
+            });
+            progressText.addEventListener("mouseleave", () => {
+                hoverTimeout = setTimeout(() => {
+                    progressText.textContent = Math.floor(percentage) + "%";
+                }, 10000); // Wait 10 seconds before reverting to integer value
+            });
+        }
 
-      // Update percentage and color every 9 months (25920000000 milliseconds)
-      function updateProgress() {
-        percentage += 1; // Increase by 1%
-        if (percentage > 100) percentage = 100; // Cap the percentage at 100%
+        function toggleHeaderText() {
+            const header = document.getElementById("header");
+            const originalText = "এহসান রোমানের জীবন";
+            const alternateText = "চির উন্নত মম শির";
 
-        // Update the width and color of the progress bar fill
-        progressFill.style.width = percentage + '%';
-        progressFill.style.backgroundColor = getColor(percentage);
-        percentageSpan.textContent = percentage + '%';
-      }
+            const switchText = () => {
+                header.textContent = alternateText;
+                header.classList.add("red-text");
 
-      // Interval for updating the progress (9 months)
-      const nineMonthsInMilliseconds = 9 * 30 * 24 * 60 * 60 * 1000; // Approximate 9 months in milliseconds
+                setTimeout(() => {
+                    header.textContent = originalText;
+                    header.classList.remove("red-text");
+                }, 10000); // 10 seconds
+            };
 
-      // Update progress immediately and then every 9 months
-      updateProgress();
-      setInterval(updateProgress, nineMonthsInMilliseconds);
-    });
-  </script>
+            header.addEventListener("click", switchText);
+            header.addEventListener("mouseenter", switchText); // Hover functionality
+        }
 
+        // Update progress bars every second
+        setInterval(() => {
+            const startDate = new Date("2008-05-03"); // Starting date
+            const age = calculateAge(startDate);
+
+            // Bar 1: (age / 72.6) * 100
+            const percentage1 = (age / 72.6) * 100;
+            updateProgressBar("progressBar1", "progressText1", percentage1);
+
+            // Bar 2: (ln(age) / ln(72.6)) * 100
+            const percentage2 = age > 1 ? (Math.log(age) / Math.log(72.6)) * 100 : 0; // Avoid log error for age < 1
+            updateProgressBar("progressBar2", "progressText2", percentage2);
+        }, 1000); // Update every second
+
+        // Initialize header click and hover functionality
+        toggleHeaderText();
+    </script>
 </body>
 </html>
+
 
